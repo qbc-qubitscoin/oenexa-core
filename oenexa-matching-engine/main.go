@@ -28,7 +28,7 @@ func main() {
 		ob,
 		tradeProducer,
 	)
-	
+
 	// Start consuming in a goroutine or block main
 	consumer.Start()
 }

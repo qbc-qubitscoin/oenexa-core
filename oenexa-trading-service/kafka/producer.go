@@ -10,15 +10,26 @@ import (
 	"github.com/segmentio/kafka-go"
 )
 
+type MessageWriter interface {
+	WriteMessages(ctx context.Context, msgs ...kafka.Message) error
+	Close() error
+}
+
 type EventProducer struct {
-	writer *kafka.Writer
+	writer MessageWriter
+}
+
+func NewEventProducerWithWriter(writer MessageWriter) *EventProducer {
+	return &EventProducer{writer: writer}
 }
 
 func NewEventProducer(brokers []string, topic string) *EventProducer {
 	w := &kafka.Writer{
-		Addr:     kafka.TCP(brokers...),
-		Topic:    topic,
-		Balancer: &kafka.LeastBytes{},
+		Addr:                   kafka.TCP(brokers...),
+		Topic:                  topic,
+		Balancer:               &kafka.LeastBytes{},
+		AllowAutoTopicCreation: true,
+		MaxAttempts:            10,
 	}
 	return &EventProducer{writer: w}
 }
@@ -39,7 +50,7 @@ func (p *EventProducer) PublishOrderCreated(orderID string, userID int64, asset 
 	if err != nil {
 		return fmt.Errorf("failed to marshal event: %w", err)
 	}
-	
+
 	// Convert bytes to string as Java side expects String payloads directly
 	payloadStr := string(payloadBytes)
 
@@ -58,8 +69,12 @@ func (p *EventProducer) PublishOrderCreated(orderID string, userID int64, asset 
 	return nil
 }
 
-func (p *EventProducer) Close() {
-	if err := p.writer.Close(); err != nil {
-		log.Fatal("failed to close writer:", err)
+func (p *EventProducer) Close() error {
+	if p.writer != nil {
+		if err := p.writer.Close(); err != nil {
+			log.Printf("failed to close writer: %v", err)
+			return err
+		}
 	}
+	return nil
 }

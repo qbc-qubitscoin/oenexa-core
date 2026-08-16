@@ -11,8 +11,12 @@ public class CryptoUtils {
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
     public static String sha256(String input) {
+        return hash(input, "SHA-256");
+    }
+
+    static String hash(String input, String algorithm) {
         try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            MessageDigest digest = MessageDigest.getInstance(algorithm);
             byte[] hash = digest.digest(input.getBytes());
             StringBuilder hexString = new StringBuilder(2 * hash.length);
             for (byte b : hash) {

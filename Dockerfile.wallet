@@ -5,8 +5,7 @@ COPY gradlew .
 COPY gradle gradle
 COPY build.gradle.kts .
 COPY settings.gradle.kts .
-COPY oenexa-wallet-service oenexa-wallet-service
-COPY oenexa-security-common oenexa-security-common
+COPY . .
 RUN chmod +x ./gradlew
 # Build only the wallet service
 RUN ./gradlew :oenexa-wallet-service:build -x test

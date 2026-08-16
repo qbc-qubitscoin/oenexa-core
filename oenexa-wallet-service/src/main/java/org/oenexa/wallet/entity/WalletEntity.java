@@ -16,10 +16,12 @@ public class WalletEntity {
     private WalletType walletType;
     private String currency;
     
-    @Column(precision = 30, scale = 8)
+    @Builder.Default
+    @Column(nullable = false, precision = 36, scale = 18)
     private java.math.BigDecimal balance = java.math.BigDecimal.ZERO;
     
-    @Column(precision = 30, scale = 8)
+    @Builder.Default
+    @Column(nullable = false, precision = 36, scale = 18)
     private java.math.BigDecimal lockedBalance = java.math.BigDecimal.ZERO;
     
     @Enumerated(EnumType.STRING)

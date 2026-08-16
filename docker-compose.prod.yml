@@ -2,20 +2,20 @@ version: '3.8'
 
 services:
   wallet-service:
-    image: ghcr.io/qbc-qubitscoin/oenexa/wallet-service:latest
+    image: ghcr.io/qbc-qubitscoin/oenexa-core/wallet-service:latest
     ports:
       - "8081:8081"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/oenexa
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/wallet_db
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=verysecret
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
     depends_on:
-      - postgres
+      - mysql
       - kafka
 
   trading-service:
-    image: ghcr.io/qbc-qubitscoin/oenexa/trading-service:latest
+    image: ghcr.io/qbc-qubitscoin/oenexa-core/trading-service:latest
     ports:
       - "8084:8084"
     environment:
@@ -24,22 +24,22 @@ services:
       - kafka
 
   matching-engine:
-    image: ghcr.io/qbc-qubitscoin/oenexa/matching-engine:latest
+    image: ghcr.io/qbc-qubitscoin/oenexa-core/matching-engine:latest
     environment:
       - KAFKA_BROKERS=kafka:9092
     depends_on:
       - kafka
 
-  postgres:
-    image: postgres:15-alpine
-    environment:
-      POSTGRES_DB: oenexa
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+  mysql:
+    image: mysql:9.3
+    restart: unless-stopped
     ports:
-      - "5432:5432"
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: verysecret
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - mysql_data:/var/lib/mysql
+      - ./scripts/init-databases.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.4.0
@@ -63,4 +63,4 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
 
 volumes:
-  pgdata:
+  mysql_data:

@@ -15,7 +15,6 @@ dependencies {
     implementation(libs.flyway.core)
     implementation(libs.flyway.mysql)
     runtimeOnly(libs.mysql.connector.java)
-    testImplementation(libs.spring.boot.starter.test)
     testImplementation(libs.testcontainers.junit.jupiter)
     testImplementation(libs.testcontainers.mysql)
     testImplementation(libs.testcontainers.kafka)

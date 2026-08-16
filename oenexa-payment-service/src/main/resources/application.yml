@@ -5,13 +5,13 @@ spring:
   application:
     name: oenexa-payment-service
   datasource:
-    url: jdbc:mysql://localhost:3306/payment_db
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3307}/payment_db
     username: root
-    password: verysecret
+    password: ${MYSQL_PASSWORD:verysecret}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect

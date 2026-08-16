@@ -30,13 +30,13 @@ func main() {
 		price := 63163.11 // Starting BTC price
 		for {
 			time.Sleep(2 * time.Second)
-			
+
 			// Randomly move price between -100 and +100
 			delta := (rand.Float64() * 200) - 100
 			price += delta
-			
+
 			wsHub.BroadcastData("ticker", "BTC", map[string]interface{}{
-				"price": price,
+				"price":  price,
 				"change": "+0.42%", // Mock change
 			})
 		}

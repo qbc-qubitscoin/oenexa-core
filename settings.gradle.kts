@@ -1,7 +1,11 @@
-rootProject.name = "oenexa"
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version "0.9.0"
+}
+
+rootProject.name = "oenexa-core"
 
 // ═══════════════════════════════════════════════════
-// OENEXA™ — Multi-Module Project Settings
+// OENEXA Core™ — Multi-Module Project Settings
 // ═══════════════════════════════════════════════════
 
 // ── Shared Libraries ──

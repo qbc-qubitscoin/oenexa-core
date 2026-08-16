@@ -1,9 +1,9 @@
-# OENEXA™ — Development Process & Step-by-Step Design Guide
+# OENEXA Core™ — Development Process & Step-by-Step Design Guide
 
 > **Document Type:** Development Process Guide  
-> **Version:** 1.0.0  
-> **Date:** August 12, 2026  
-> **Purpose:** Complete step-by-step development design process for the OENEXA multi-module platform  
+> **Version:** 2.0.0  
+> **Date:** September 19, 2026  
+> **Purpose:** Complete step-by-step development design process for the OENEXA Core (oenexa-core) multi-module platform  
 
 ---
 
@@ -113,7 +113,7 @@ OENEXA follows a **Domain-Driven Design (DDD)** approach with **microservices ar
 ### Step 1: Define the Module Hierarchy
 
 ```
-oenexa/                                  ← Root Project (Gradle parent)
+oenexa-core/                             ← Root Project (Gradle parent)
 │
 ├── gradle/
 │   └── libs.versions.toml               ← Centralized Version Catalog
@@ -799,6 +799,29 @@ docker compose ps
 
 ## 19. Testing Strategy
 
+### BDD & TDD Mandatory Engineering Paradigm
+
+All services and modules across the OENEXA Core platform must be designed, written, and maintained using **TDD (Test-Driven Development)** and **BDD (Behavior-Driven Development)**:
+
+#### 1. Test-Driven Development (TDD) — The Red-Green-Refactor Cycle
+1. **Red**: Write a failing unit or behavior test before implementing any feature, bug fix, or business logic.
+2. **Green**: Write the minimal code necessary to make the test pass.
+3. **Refactor**: Clean up the design, remove code duplication, optimize performance, and keep the test suite green.
+4. **Coverage**: 100% code coverage strictly verified via JaCoCo (`minimum = 1.00`).
+
+#### 2. Behavior-Driven Development (BDD) — Given-When-Then Semantics
+Every test case must be specified using human-readable domain behaviors:
+- **Given**: The preconditions, account balances, user roles, or initial state.
+- **When**: The specific action or domain command executed.
+- **Then**: The expected observable outcome, balances changed, events produced, or exceptions thrown.
+
+All JUnit 5 test methods must declare `@DisplayName("Given [preconditions], When [action], Then [outcome]")` and delineate sections with `// Given`, `// When`, `// Then`. Go tests must use table-driven subtests with explicit Given-When-Then phases.
+
+#### 3. Strict Native Stub Paradigm & Permanent Mockito Ban
+- **Absolute Prohibition of Mockito**: Neither `org.mockito` nor any dynamic bytecode mocking engine is permitted anywhere in the repository.
+- **Compile-Time Exclusion**: `org.mockito` is barred in `build.gradle.kts` to guarantee that code using Mockito cannot compile.
+- **Native Stubs & Spring Support**: Use decoupled interfaces, native manual fakes/stubs (e.g. `StubPaymentService`, `StubBankingService`), Spring `MockHttpServletRequest`/`MockFilterChain`, and in-memory H2 databases.
+
 ### Test Pyramid
 
 ```
@@ -810,19 +833,20 @@ docker compose ps
     ╱          ╲    Testcontainers, Kafka, MySQL
    ╱────────────╲
   ╱              ╲   Unit Tests (75%)
- ╱                ╲  Service logic, mappers, utils
+ ╱                ╲  BDD/TDD Service logic, native stubs, mappers, utils
 ╱──────────────────╲
 ```
 
 ### Testing Tools
 
-| Level       | Tool                   | Usage                  |
-|-------------|------------------------|------------------------|
-| Unit        | JUnit 5 + Mockito      | Service layer logic    |
-| Integration | Testcontainers         | Database, Kafka, Redis |
-| API         | MockMvc + REST Assured | Controller endpoints   |
-| Load        | Gatling / k6           | Performance benchmarks |
-| Security    | OWASP ZAP              | Penetration testing    |
+| Level       | Tool                                           | Usage                                                      |
+|-------------|------------------------------------------------|------------------------------------------------------------|
+| BDD / Unit  | JUnit 5 + Spring Test / Native Stubs (No Mockito) | TDD Red-Green-Refactor, Given-When-Then behavioral tests    |
+| Coverage    | JaCoCo (`minimum = 1.00`) / `go test`          | Strict 100% verification on all business logic modules     |
+| Integration | Testcontainers / Embedded H2                   | Database, Kafka, Redis, in-memory isolation                |
+| API         | MockMvc + REST Assured                         | Controller endpoints with HTTP assertion                   |
+| Load        | Gatling / k6                                   | Performance benchmarks                                     |
+| Security    | OWASP ZAP                                      | Penetration testing                                        |
 
 ---
 

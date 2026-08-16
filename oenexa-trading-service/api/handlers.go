@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/oenexa/trading-service/kafka"
 )
 
 type OrderRequest struct {
@@ -15,12 +14,16 @@ type OrderRequest struct {
 	Price  float64 `json:"price" binding:"required,gt=0"`
 }
 
+type OrderProducer interface {
+	PublishOrderCreated(orderID string, userID int64, asset string, side string, size float64, price float64) error
+}
+
 type Router struct {
-	producer *kafka.EventProducer
+	producer OrderProducer
 	wsHub    *WSHub
 }
 
-func NewRouter(producer *kafka.EventProducer, wsHub *WSHub) *Router {
+func NewRouter(producer OrderProducer, wsHub *WSHub) *Router {
 	return &Router{producer: producer, wsHub: wsHub}
 }
 

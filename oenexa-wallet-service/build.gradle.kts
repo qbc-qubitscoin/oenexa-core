@@ -16,5 +16,7 @@ dependencies {
     implementation(libs.flyway.core)
     implementation(libs.flyway.mysql)
     runtimeOnly(libs.mysql.connector.java)
+    
+    testImplementation("org.springframework.boot:spring-boot-resttestclient")
+    testImplementation("org.springframework.boot:spring-boot-data-jpa-test")
 }
-
