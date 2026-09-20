@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.oenexa.wallet.entity.WalletEntity;
 import org.oenexa.wallet.repository.WalletRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -14,8 +14,11 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DataJpaTest
+import org.springframework.transaction.annotation.Transactional;
+
+@SpringBootTest
 @ActiveProfiles("test")
+@Transactional
 @Import(WalletService.class)
 @DisplayName("WalletService BDD Test Suite")
 class WalletServiceTest {

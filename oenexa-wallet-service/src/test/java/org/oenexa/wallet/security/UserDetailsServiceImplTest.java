@@ -7,7 +7,7 @@ import org.oenexa.wallet.entity.User;
 import org.oenexa.wallet.repository.RoleRepository;
 import org.oenexa.wallet.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,8 +17,11 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DataJpaTest
+import org.springframework.transaction.annotation.Transactional;
+
+@SpringBootTest
 @ActiveProfiles("test")
+@Transactional
 @Import(UserDetailsServiceImpl.class)
 @DisplayName("UserDetailsServiceImpl BDD Test Suite")
 class UserDetailsServiceImplTest {

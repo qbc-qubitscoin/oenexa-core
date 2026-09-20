@@ -48,6 +48,8 @@ logstash-logback = "8.1"
 testcontainers = "1.21.1"
 assertj = "3.27.3"
 rest-assured = "5.5.1"
+cucumber = "7.15.0"
+junit-platform = "1.10.2"
 
 [libraries]
 # Spring Boot Starters
@@ -77,6 +79,7 @@ spring-cloud-starter-openfeign = { module = "org.springframework.cloud:spring-cl
 
 # Database
 mysql-connector-java = { module = "com.mysql:mysql-connector-j", version.ref = "mysql-connector" }
+h2 = { module = "com.h2database:h2" }
 flyway-core = { module = "org.flywaydb:flyway-core", version.ref = "flyway" }
 flyway-mysql = { module = "org.flywaydb:flyway-mysql", version.ref = "flyway" }
 
@@ -127,11 +130,16 @@ testcontainers-kafka = { module = "org.testcontainers:kafka", version.ref = "tes
 testcontainers-elasticsearch = { module = "org.testcontainers:elasticsearch", version.ref = "testcontainers" }
 rest-assured = { module = "io.rest-assured:rest-assured", version.ref = "rest-assured" }
 spring-security-test = { module = "org.springframework.security:spring-security-test" }
+cucumber-java = { module = "io.cucumber:cucumber-java", version.ref = "cucumber" }
+cucumber-spring = { module = "io.cucumber:cucumber-spring", version.ref = "cucumber" }
+cucumber-junit-platform-engine = { module = "io.cucumber:cucumber-junit-platform-engine", version.ref = "cucumber" }
+junit-platform-suite = { module = "org.junit.platform:junit-platform-suite", version.ref = "junit-platform" }
 
 [bundles]
 jjwt = ["jjwt-api", "jjwt-impl", "jjwt-jackson"]
 grpc = ["grpc-netty", "grpc-protobuf", "grpc-stub"]
 resilience4j = ["resilience4j-spring-boot", "resilience4j-circuitbreaker", "resilience4j-ratelimiter"]
+cucumber = ["cucumber-java", "cucumber-spring", "cucumber-junit-platform-engine", "junit-platform-suite"]
 
 [plugins]
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
