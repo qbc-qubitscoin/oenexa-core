@@ -17,6 +17,7 @@ dependencies {
     implementation(libs.bouncycastle)
     runtimeOnly(libs.mysql.connector.java)
     
+    testImplementation(libs.h2)
     testImplementation(libs.testcontainers.junit.jupiter)
     testImplementation(libs.testcontainers.mysql)
 }

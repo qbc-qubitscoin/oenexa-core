@@ -58,10 +58,12 @@ class AuthControllerTest {
     @Test
     void testLogin() throws Exception {
         RegisterRequest registerRequest = new RegisterRequest("login-controller@test.com", "password");
+        HttpRequest registerReq = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:" + port + "/api/v1/auth/register"))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(registerRequest)))
                 .build();
+        httpClient.send(registerReq, HttpResponse.BodyHandlers.discarding());
 
         AuthRequest loginRequest = new AuthRequest("login-controller@test.com", "password");
         HttpRequest loginReq = HttpRequest.newBuilder()
@@ -70,7 +72,9 @@ class AuthControllerTest {
                 .POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(loginRequest)))
                 .build();
 
-
+        HttpResponse<String> response = httpClient.send(loginReq, HttpResponse.BodyHandlers.ofString());
+        assertEquals(200, response.statusCode());
+        AuthResponse authResponse = objectMapper.readValue(response.body(), AuthResponse.class);
         assertEquals("login-controller@test.com", authResponse.getEmail());
         assertNotNull(authResponse.getToken());
     }
